@@ -1,15 +1,23 @@
 {
   "name": "cuphead",
   "version": "1.0.0",
-  "description": "",
+  "description": "cuphead on the browser",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "browser-sync start --server -w"
   },
-  "keywords": [],
+  "repository": {
+    "url": "https://github.com/PoorlyDefinedBehaviour/browser-cuphead"
+  },
+  "keywords": [
+    "cuphead",
+    "vanillajs",
+    "p5js",
+    "game"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {},
   "dependencies": {
     "serve": "^11.1.0"
