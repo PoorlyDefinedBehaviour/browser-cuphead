@@ -3,17 +3,26 @@
 class Animation {
   id;
   frames = [];
+  skippable = true;
   current_frame = 0;
   last_frame_request_timestamp = 0;
   frame_delay;
 
-  constructor(frames, frame_delay = 60, id) {
+  constructor(frames, frame_delay = 60, id = "none", skippable = true) {
     this.frames = frames.map(frame => loadImage(frame));
     this.frame_delay = frame_delay;
     this.id = id;
+    this.skippable = skippable;
   }
 
   get_id = () => this.id;
+
+  set_skippable = skippable => {
+    this.skippable = boolean;
+    return this;
+  };
+
+  is_skippable = () => this.skippable;
 
   next_frame = () => {
     const timePassed = Date.now() - this.last_frame_request_timestamp;

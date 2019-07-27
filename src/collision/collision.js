@@ -25,15 +25,23 @@ function collision_skill_entity(entity, skill_list) {
     if (entity.get_id() !== "player" && !skill_list[i].is_owned_by_player())
       continue;
 
+    if (aabb(cuphead, cagney)) {
+      cuphead.receive_damage(1);
+      entity_hit_sound.play();
+    }
+
     if (aabb(entity, skill_list[i])) {
       entity.receive_damage(skill_list[i].get_damage());
       skill_list.splice(i, 1);
+      entity_hit_sound.play();
     }
   }
 }
 
 function collision_between_skills(current_skill_index, skill_list) {
   const current_skill = skill_list[current_skill_index];
+
+  if (!current_skill) return;
 
   for (let i = skill_list.length - 1; i > -1; --i) {
     if (
@@ -67,5 +75,21 @@ function out_of_screen(skill) {
     x > windowWidth + minimum_distance ||
     y - height < -minimum_distance ||
     y > windowHeight + minimum_distance
+  );
+}
+
+function is_on_ground(entity) {
+  const position = entity.get_position();
+  const dimensions = entity.get_animation().get_dimensions();
+
+  return collideRectRect(
+    position.x,
+    position.y,
+    dimensions.width,
+    dimensions.height,
+    0,
+    floor_height,
+    windowWidth,
+    windowHeight
   );
 }

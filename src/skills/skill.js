@@ -55,20 +55,20 @@ class Skill {
     return this;
   };
 
-  set_velocity = velocity => {
-    this.velocity = velocity;
+  set_velocity = (x, y) => {
+    this.velocity = { x, y };
     return this;
   };
 
-  set_velocity_incrementer = incrementer => {
-    this.velocity_incrementer = incrementer;
+  set_velocity_incrementer = (x, y) => {
+    this.velocity_incrementer = { x, y };
     return this;
   };
 
   get_direction = () => this.direction;
 
-  set_position = position => {
-    this.position = position;
+  set_position = (x, y) => {
+    this.position = { x, y };
     return this;
   };
 

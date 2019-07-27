@@ -3,11 +3,22 @@
 let floor_height;
 
 let main_theme;
+
+let cuphead_attack_sound;
+let cuphead_jump_sound;
+let cuphead_death_sound;
+
+let cagney_firing_seeds_sound;
+let cagney_intro_yell;
+
+let entity_hit_sound;
+
 let game_background;
 let flowers_parallax;
 let grass;
 let cuphead_health_icon_filled;
 let cuphead_health_icon_dark;
+let bravo_sheet;
 let missile_animation;
 
 let cuphead;
@@ -20,7 +31,6 @@ const cuphead_animations = {
   run: { normal: Symbol(), gun: Symbol() },
   jump: Symbol(),
   death: Symbol(),
-  ghost: Symbol(),
   shoot: Symbol()
 };
 
@@ -33,18 +43,53 @@ const cagney_animations = {
 };
 
 function preload() {
-  game_background = loadImage("../assets/background.png");
-  flowers_parallax = loadImage("../assets/flowers.png");
-  grass = loadImage("../assets/grass.png");
-  cuphead_health_icon_filled = loadImage("../assets/life_filled.png");
-  cuphead_health_icon_dark = loadImage("../assets/life_dark.png");
+  game_background = loadImage("../assets/resized/background_optimized.png");
+  flowers_parallax = loadImage("../assets/resized/flowers_optimized.png");
+  grass = loadImage("../assets/resized/grass_optimized.png");
+  cuphead_health_icon_filled = loadImage(
+    "../assets/resized/life_filled_optimized.png"
+  );
+  cuphead_health_icon_dark = loadImage(
+    "../assets/resized/life_dark_optimized.png"
+  );
+
+  bravo_sheet = loadImage(ui_images.bravo_sheet);
 
   missile_animation = new Animation(skill_frames.missile);
 
   main_theme = loadSound("../assets/audio/cuphead_ost_floral_fury.mp3", () => {
     main_theme.setVolume(0.1);
-    //main_theme.loop();
+    main_theme.loop();
   });
+
+  entity_hit_sound = loadSound("../assets/audio/player_hit_01.wav", () =>
+    entity_hit_sound.setVolume(0.008)
+  );
+
+  cuphead_attack_sound = loadSound(
+    "../assets/cuphead/sounds/player_spreadshot_fire_loop.wav",
+    () => cuphead_attack_sound.setVolume(0.01)
+  );
+
+  cuphead_jump_sound = loadSound(
+    "../assets/cuphead/sounds/player_jump_01.wav",
+    () => cuphead_jump_sound.setVolume(0.03)
+  );
+
+  cuphead_death_sound = loadSound(
+    "../assets/cuphead/sounds/player_death_01.wav",
+    () => cuphead_death_sound.setVolume(0.005)
+  );
+
+  cagney_firing_seeds_sound = loadSound(
+    "../assets/Cagney/sounds/flower_gattling_loop.wav",
+    () => cagney_firing_seeds_sound.setVolume(0.2)
+  );
+
+  cagney_intro_yell = loadSound(
+    "../assets/Cagney/sounds/flower_intro_yell.wav",
+    () => cagney_intro_yell.setVolume(0.08)
+  );
 
   cuphead = new Entity()
     .set_id("player")
@@ -54,25 +99,46 @@ function preload() {
     .add_animation(cuphead_animations.run.gun, cuphead_frames.run.gun)
     .add_animation(cuphead_animations.shoot, cuphead_frames.shoot, 60)
     .add_animation(cuphead_animations.jump, cuphead_frames.jump)
-    .add_animation(cuphead_animations.death, cuphead_frames.death)
-    .add_animation(cuphead_animations.ghost, cuphead_frames.ghost)
-    .set_animation(cuphead_animations.death);
+    .add_animation(
+      cuphead_animations.death,
+      cuphead_frames.death,
+      60,
+      "none",
+      false
+    )
+    .set_animation(cuphead_animations.jump);
 
   cagney = new Entity()
     .set_id("boss")
     .set_health(500)
     .set_position(windowWidth - 380, windowHeight - 650)
     .add_animation(cagney_animations.idle, cagney_frames.idle)
-    .add_animation(cagney_animations.intro, cagney_frames.intro, 70)
     .add_animation(cagney_animations.create_object, cagney_frames.create_object)
-    //.add_animation(cagney_animations.death, cagney_frames.death)
     .add_animation(
       cagney_animations.firing_seeds,
       cagney_frames.firing_seeds,
       60,
       "missile"
     )
-    .set_animation(cagney_animations.firing_seeds);
+    .set_animation(cagney_animations.idle);
+
+  setTimeout(() => {
+    cagney
+      .add_animation(
+        cagney_animations.death,
+        cagney_frames.death,
+        150,
+        "none",
+        true
+      )
+      .add_animation(
+        cagney_animations.intro,
+        cagney_frames.intro,
+        70,
+        "none",
+        true
+      );
+  }, 10000);
 }
 
 function setup() {
@@ -80,6 +146,8 @@ function setup() {
   frameRate(60);
   createCanvas(windowWidth, windowHeight);
   floor_height = windowHeight - 250;
+
+  document.getElementById("main-container").style.display = "none";
 }
 
 function windowResized() {
@@ -93,67 +161,74 @@ function handle_key_press() {
 
   const jumpHeight = 10;
 
-  if (keyIsDown(87)) {
-    if (is_on_ground(cuphead)) {
+  if (!cuphead.is_dead()) {
+    if (keyIsDown(87) && is_on_ground(cuphead)) {
       cuphead.set_animation(cuphead_animations.jump);
       cuphead.set_velocity(velocity.x, -jumpHeight);
+      cuphead_jump_sound.play();
+    }
+
+    if (keyIsDown(32)) {
+      if (is_on_ground(cuphead))
+        cuphead.set_animation(cuphead_animations.shoot);
+      shoot_ray();
+    }
+
+    if (keyIsDown(65) && keyIsDown(32)) {
+      cuphead.set_direction("left");
+
+      if (is_on_ground(cuphead))
+        cuphead.set_animation(cuphead_animations.run.gun);
+
+      if (cuphead.get_position().x > 0)
+        cuphead.set_position(x - cuphead.get_move_speed(), y);
+
+      return;
+    }
+
+    if (keyIsDown(68) && keyIsDown(32)) {
+      cuphead.set_direction("right");
+
+      if (is_on_ground(cuphead))
+        cuphead.set_animation(cuphead_animations.run.gun);
+
+      if (
+        cuphead.get_position().x +
+          cuphead.get_animation().get_dimensions().width <
+        windowWidth
+      )
+        cuphead.set_position(x + cuphead.get_move_speed(), y);
+
+      return;
     }
   }
 
-  if (keyIsDown(32)) {
-    if (is_on_ground(cuphead)) cuphead.set_animation(cuphead_animations.shoot);
-    shoot_ray();
-  }
-
-  if (keyIsDown(65) && keyIsDown(32)) {
-    if (is_on_ground(cuphead))
-      cuphead.set_animation(cuphead_animations.run.gun);
-    cuphead.set_direction("left");
-    cuphead.set_position(x - cuphead.get_move_speed(), y);
-
-    return;
-  }
-
-  if (keyIsDown(68) && keyIsDown(32)) {
-    if (is_on_ground(cuphead))
-      cuphead.set_animation(cuphead_animations.run.gun);
-    cuphead.set_direction("right");
-    cuphead.set_position(x + cuphead.get_move_speed(), y);
-    return;
-  }
-
   if (keyIsDown(65)) {
+    cuphead.set_direction("left");
+
     if (is_on_ground(cuphead))
       cuphead.set_animation(cuphead_animations.run.normal);
-    cuphead.set_direction("left");
-    cuphead.set_position(x - cuphead.get_move_speed(), y);
+
+    if (cuphead.get_position().x > 0)
+      cuphead.set_position(x - cuphead.get_move_speed(), y);
 
     return;
   }
 
   if (keyIsDown(68)) {
+    cuphead.set_direction("right");
+
     if (is_on_ground(cuphead))
       cuphead.set_animation(cuphead_animations.run.normal);
-    cuphead.set_direction("right");
-    cuphead.set_position(x + cuphead.get_move_speed(), y);
+
+    if (
+      cuphead.get_position().x +
+        cuphead.get_animation().get_dimensions().width <
+      windowWidth
+    )
+      cuphead.set_position(x + cuphead.get_move_speed(), y);
     return;
   }
-}
-
-function is_on_ground(entity) {
-  const entityPosition = entity.get_position();
-  const entityDimensions = entity.get_animation().get_dimensions();
-
-  return collideRectRect(
-    entityPosition.x,
-    entityPosition.y,
-    entityDimensions.width,
-    entityDimensions.height,
-    0,
-    floor_height,
-    windowWidth,
-    windowHeight
-  );
 }
 
 function keep_cuphead_above_floor() {
@@ -206,7 +281,7 @@ function draw_entity(entity) {
 function draw_cuphead_health() {
   for (let i = 0; i < 3; ++i) {
     image(
-      i <= cuphead.health
+      i < cuphead.health
         ? cuphead_health_icon_filled
         : cuphead_health_icon_dark,
       i * 90,
@@ -215,11 +290,20 @@ function draw_cuphead_health() {
   }
 }
 
-function draw_projectiles() {
-  for (const projectile of skill_list) {
-    projectile.update();
-    const frame = projectile.get_animation().next_frame();
-    image(frame, projectile.position.x, projectile.position.y);
+function draw_skills() {
+  for (const skill of skill_list) {
+    skill.update();
+
+    const position = skill.get_position();
+    const frame = skill.get_animation().next_frame();
+
+    push();
+    translate(position.x, position.y);
+
+    skill.get_direction() === "left" ? scale(-1.0, 1.0) : scale(1.0, 1.0);
+
+    image(frame, 0, 0);
+    pop();
   }
 }
 
@@ -236,67 +320,55 @@ function collision() {
   }
 }
 
-const shoot_ray = debounce(() => {
-  const position = cuphead.get_position();
-  const direction = cuphead.get_direction();
-
-  const skill = new Skill(
-    direction === "right" ? position.x + 125 : position.x - 70,
-    position.y + 65,
-    direction
-  )
-    .set_velocity({ x: direction === "right" ? 5 : -5, y: 0 })
-    .set_velocity_incrementer({ x: direction === "right" ? 0.2 : -0.2, y: 0 })
-    .set_animation(skill_frames.ray)
-    .set_owned_by_player(true);
-
-  skill_list.push(skill);
-}, 150);
-
 function make_boss_attack() {
   if (!cagney.get_animation().is_last_frame()) return;
 
-  const attack = random_int(0, 2);
-
-  const position = cagney.get_position();
+  const attack = random_int(0, 3);
 
   switch (attack) {
     case 0: {
-      const skill = new Skill(
-        random_int(windowWidth - 400, windowWidth - 100),
-        random_int(0, -200),
-        "left"
-      )
-        .set_animation(skill_frames.seed_missile)
-        .set_velocity({ x: -1, y: 1 })
-        .set_velocity_incrementer({ x: -0.15, y: 0.1 });
-
-      skill_list.push(skill);
+      cagney.set_animation(cagney_animations.firing_seeds);
+      launch_seed_missile();
       break;
     }
     case 1: {
       cagney.set_animation(cagney_animations.create_object);
-      const skill = new Skill(position.x, position.y + 250, "left")
-        .set_update_fn(self => {
-          self.position.x += self.velocity.x;
-          self.position.y += self.velocity.y;
-          self.velocity.x += self.velocity_incrementer.x;
-          self.velocity.y += self.velocity_incrementer.y;
-
-          if (self.velocity.y < -8 || self.velocity.y > 8)
-            self.velocity.y *= -1;
-        })
-        .set_animation(skill_frames.boomerang)
-        .set_velocity({ x: -1.0, y: -1.0 })
-        .set_velocity_incrementer(
-          random_choice({ x: -0.1, y: -0.1 }, { x: -0.1, y: 0.1 })
-        );
-
-      skill_list.push(skill);
+      random_choice(create_boomerang, create_pollen)();
       break;
     }
     case 2:
+      create_venus(cuphead);
       break;
+    case 3:
+      cagney.set_animation(cagney_animations.idle);
+      break;
+  }
+}
+
+function restart_game() {
+  cuphead
+    .set_health(3)
+    .set_animation(cuphead_animations.jump, true)
+    .set_position(10, 10)
+    .set_velocity(0, 0);
+
+  cagney.set_health(500).set_animation(cagney_animations.intro, true);
+
+  cagney_intro_yell.play();
+}
+
+function handle_deaths() {
+  if (
+    cuphead.is_dead() &&
+    cuphead.get_animation().toString() !== cuphead_animations.death
+  ) {
+    cuphead.set_animation(cuphead_animations.death).when_over(restart_game);
+    cuphead_death_sound.play();
+  }
+
+  if (cagney.is_dead()) {
+    cagney.set_animation(cagney_animations.death, true).when_over(restart_game);
+    skill_list = [];
   }
 }
 
@@ -309,14 +381,18 @@ function draw() {
   make_boss_attack();
 
   handle_key_press();
+  handle_deaths();
 
   draw_entity(cuphead);
   draw_entity(cagney);
   draw_cuphead_health();
-  draw_projectiles();
+  draw_skills();
 
   collision();
 
   image(grass, windowWidth - 420, 450);
   image(flowers_parallax, -60, windowHeight - 250, windowWidth + 60);
+
+  console.log("cuphead position", cuphead.position);
+  console.log("cagney health", cagney.health);
 }
