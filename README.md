@@ -4,8 +4,11 @@ Recreation of cuphead's floral fury boss fight
 
 ## Installation
 
+https://poorlydefinedbehaviour.github.io (chrome is recommended)
+
 ```sh
 git clone https://github.com/PoorlyDefinedBehaviour/browser-cuphead
+
 ```
 
 ## Usage

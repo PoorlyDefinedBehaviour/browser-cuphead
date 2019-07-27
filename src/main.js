@@ -389,7 +389,4 @@ function draw() {
 
   image(grass, windowWidth - 420, 450);
   image(flowers_parallax, -60, windowHeight - 250, windowWidth + 60);
-
-  console.log("cuphead position", cuphead.position);
-  console.log("cagney health", cagney.health);
 }
