@@ -18,7 +18,6 @@ let flowers_parallax;
 let grass;
 let cuphead_health_icon_filled;
 let cuphead_health_icon_dark;
-let bravo_sheet;
 let missile_animation;
 
 let cuphead;
@@ -52,8 +51,6 @@ function preload() {
   cuphead_health_icon_dark = loadImage(
     "../assets/resized/life_dark_optimized.png"
   );
-
-  bravo_sheet = loadImage(ui_images.bravo_sheet);
 
   missile_animation = new Animation(skill_frames.missile);
 
