@@ -4,22 +4,27 @@
   "description": "cuphead on the browser",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "browser-sync start --server -w"
+    "start": "tsc && parcel build build/main.js && npx serve",
+    "build": "tsc && parcel build build/main.js"
   },
   "repository": {
     "url": "https://github.com/PoorlyDefinedBehaviour/browser-cuphead"
   },
   "keywords": [
     "cuphead",
-    "vanillajs",
+    "typescript",
     "p5js",
     "game"
   ],
   "author": "",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/p5": "^0.7.3",
+    "cssnano": "^4.1.10",
+    "parcel-bundler": "^1.12.3",
+    "typescript": "^3.5.3"
+  },
   "dependencies": {
-    "serve": "^11.1.0"
+    "p5": "^0.9.0"
   }
 }

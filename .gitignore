@@ -1,2 +1,7 @@
 node_modules/
 .vscode/
+build/
+.cache/
+dist/
+tsconfig.buildinfo
+package-lock.json

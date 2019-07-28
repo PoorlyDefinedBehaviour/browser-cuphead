@@ -1,7 +1,6 @@
-"use strict";
 
-const debounce = (fn, ms) => {
-  function wrapper(...args) {
+export const debounce = (fn: any, ms: number): any => {
+  function wrapper(this: any, ...args: any): any {
     if (Date.now() - wrapper.timestamp > ms) {
       fn.apply(this, args);
       wrapper.timestamp = Date.now();

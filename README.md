@@ -2,21 +2,46 @@
 
 Recreation of cuphead's floral fury boss fight
 
-## Installation
+[Click here to play](https://poorlydefinedbehaviour.github.io) (A chromium based browser is required.)
 
-https://poorlydefinedbehaviour.github.io (chrome is recommended)
+## Installation
 
 ```sh
 git clone https://github.com/PoorlyDefinedBehaviour/browser-cuphead
-
 ```
 
 ## Usage
 
-```sh
-in the project root, run npx serve
+# Install dependencies
 
-Controls -> W, A, S, D and space
+```sh
+type 'npm i' in the terminal
+```
+
+# Compiling with typescript
+
+```sh
+type 'tsc' in the terminal
+```
+
+# Bundling with parcel
+
+```sh
+type 'parcel build build/main.js' in the terminal
+```
+
+# Serving the html file
+
+```sh
+type 'npx serve' in the terminal
+```
+
+## FAQ
+
+# tsc is not recognized as internal or external command
+
+```sh
+install typescript globally 'npm i -g typescript' and follow the steps
 ```
 
 ## Contributing
