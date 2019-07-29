@@ -5,7 +5,7 @@ import { Skill } from "./skill";
 import { AnimationFrames } from "../frames/frames";
 import { random_int } from "../util/randomint";
 import { random_float } from "../util/randomfloat";
-import { p5_sketch } from "../main";
+import { Game } from "../game/game";
 
 export const create_venus = debounce(
   (target: Entity, skill_list: Array<Skill>): void => {
@@ -17,26 +17,26 @@ export const create_venus = debounce(
       case 0:
         skill_position = {
           x: -50,
-          y: random_float(-50, p5_sketch.windowHeight + 50)
+          y: random_float(-50, Game.window_height + 50)
         };
         break;
       case 1:
         skill_position = {
-          x: random_float(-50, p5_sketch.windowWidth + 50),
+          x: random_float(-50, Game.window_width + 50),
           y: -50
         };
         break;
 
       case 2:
         skill_position = {
-          x: p5_sketch.windowWidth + 50,
-          y: random_float(-50, p5_sketch.windowHeight + 50)
+          x: Game.window_width + 50,
+          y: random_float(-50, Game.window_height + 50)
         };
         break;
       case 3:
         skill_position = {
-          x: random_float(-50, p5_sketch.windowWidth + 50),
-          y: p5_sketch.windowHeight + 50
+          x: random_float(-50, Game.window_width + 50),
+          y: Game.window_height + 50
         };
         break;
     }
@@ -47,7 +47,7 @@ export const create_venus = debounce(
       .set_velocity_incrementer(-0.06, 0.06)
       .set_update_fn(
         (self: Entity): void => {
-          const target_position = target.get_position();
+          const target_position: Vector2D = target.get_position();
 
           const position: Vector2D = self.get_position();
 

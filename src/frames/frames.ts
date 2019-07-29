@@ -307,4 +307,5 @@ export class AnimationFrames {
       "../assets/Cagney/Firing Seeds/Venus Flytrap/resized/Venus_12_optimized.png"
     ]
   };
+
 }

@@ -3,13 +3,14 @@ import { debounce } from "../decorators/debounce";
 import { Skill } from "./skill";
 import { AnimationFrames } from "../frames/frames";
 import { GameSounds } from "../game/sounds";
+import { Vector2D } from "../vector2d/vector2d";
 
 export const shoot_ray = debounce(
   (entity: Entity, skill_list: Array<Skill>): void => {
-    const position = entity.get_position();
-    const direction = entity.get_direction();
+    const position: Vector2D = entity.get_position();
+    const direction: string = entity.get_direction();
 
-    const skill = new Skill(
+    const skill: Skill = new Skill(
       direction === "right" ? position.x + 125 : position.x - 5,
       position.y + 65,
       direction

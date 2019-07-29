@@ -10,7 +10,13 @@ export const create_boomerang = (
 ): void => {
   const position: Vector2D = entity.get_position();
 
-  const skill = new Skill(position.x, position.y + 250, "left")
+  const skill: Skill = new Skill(position.x, position.y + 250, "left")
+    .set_animation(AnimationFrames.skills.boomerang)
+    .set_velocity(-1.0, -1.0)
+    .set_velocity_incrementer(
+      random_choice(-0.1, -0.1),
+      random_choice(-0.1, 0.1)
+    )
     .set_update_fn(
       (self: Skill): void => {
         const position: Vector2D = self.get_position();
@@ -27,12 +33,6 @@ export const create_boomerang = (
           velocity.y + velocity_incrementer.y
         );
       }
-    )
-    .set_animation(AnimationFrames.skills.boomerang)
-    .set_velocity(-1.0, -1.0)
-    .set_velocity_incrementer(
-      random_choice(-0.1, -0.1),
-      random_choice(-0.1, 0.1)
     );
 
   skill_list.push(skill);
