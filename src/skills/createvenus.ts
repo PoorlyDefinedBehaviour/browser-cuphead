@@ -6,40 +6,43 @@ import { AnimationFrames } from "../frames/frames";
 import { random_int } from "../util/randomint";
 import { random_float } from "../util/randomfloat";
 import { Game } from "../game/game";
+import { Match } from "../util/match";
 
 export const create_venus = debounce(
   (target: Entity, skill_list: Array<Skill>): void => {
-    let skill_position: Vector2D = { x: 0, y: 0 };
-
     const side_of_screen: number = random_int(0, 3);
 
-    switch (side_of_screen) {
-      case 0:
-        skill_position = {
+    const skill_position: Vector2D = Match(
+      side_of_screen,
+      [
+        0,
+        {
           x: -50,
           y: random_float(-50, Game.window_height + 50)
-        };
-        break;
-      case 1:
-        skill_position = {
+        }
+      ],
+      [
+        1,
+        {
           x: random_float(-50, Game.window_width + 50),
           y: -50
-        };
-        break;
-
-      case 2:
-        skill_position = {
+        }
+      ],
+      [
+        2,
+        {
           x: Game.window_width + 50,
           y: random_float(-50, Game.window_height + 50)
-        };
-        break;
-      case 3:
-        skill_position = {
+        }
+      ],
+      [
+        3,
+        {
           x: random_float(-50, Game.window_width + 50),
           y: Game.window_height + 50
-        };
-        break;
-    }
+        }
+      ]
+    );
 
     const skill: Skill = new Skill(skill_position.x, skill_position.y, "left")
       .set_animation(AnimationFrames.skills.venus)

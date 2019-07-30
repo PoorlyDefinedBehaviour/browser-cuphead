@@ -26,6 +26,7 @@ import { create_pollen } from "../skills/createpollen";
 
 import { random_int } from "../util/randomint";
 import { random_choice } from "../util/randomchoice";
+import { Match } from "../util/match";
 
 export class Game {
   private collider: Collider = new Collider();
@@ -271,25 +272,26 @@ export class Game {
     const animation: Maybe<Animation> = cagney.get_animation();
     if (!animation || !animation.is_last_frame()) return;
 
-    switch (random_int(0, 3)) {
-      case 0:
-        cagney.set_animation(Animations.cagney.firing_seeds);
-        launch_seed_missile(skill_list);
-        GameSounds.cagney_firing_seeds.play(0, 1, 0.03, 0, 1);
-        break;
-
-      case 1:
-        cagney.set_animation(Animations.cagney.create_object);
-        random_choice(create_boomerang, create_pollen)(cagney, skill_list);
-        break;
-
-      case 2:
-        create_venus(cuphead, skill_list);
-        break;
-      case 3:
-        cagney.set_animation(Animations.cagney.idle);
-        break;
-    }
+    Match(
+      random_int(0, 3),
+      [
+        0,
+        () => {
+          cagney.set_animation(Animations.cagney.firing_seeds);
+          launch_seed_missile(skill_list);
+          GameSounds.cagney_firing_seeds.play(0, 1, 0.03, 0, 1);
+        }
+      ],
+      [
+        1,
+        () => {
+          cagney.set_animation(Animations.cagney.create_object),
+            random_choice(create_boomerang, create_pollen)(cagney, skill_list);
+        }
+      ],
+      [2, () => create_venus(cuphead, skill_list)],
+      [3, () => cagney.set_animation(Animations.cagney.idle)]
+    );
   };
 
   private restart = (): void => {
