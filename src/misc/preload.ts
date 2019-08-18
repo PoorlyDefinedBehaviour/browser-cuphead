@@ -1,9 +1,9 @@
-import { Entity } from "../entity/entity";
-import { GameImages } from "../game/images";
-import { Animations } from "../game/animations";
-import { AnimationFrames } from "../frames/frames";
-import { GameSounds } from "../game/sounds";
-import { Animation } from "../animation/animation";
+import { Entity } from "../Entity";
+import { GameImages } from "../GameManager/images";
+import { Animations } from "../GameManager/animations";
+import { AnimationFrames } from "../Frames";
+import { GameSounds } from "../GameManager/sounds";
+import { Animation } from "../Animation";
 
 export const preload_characters = (sketch: p5): Array<Entity> => {
   const cuphead: Entity = new Entity()

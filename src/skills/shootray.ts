@@ -1,22 +1,26 @@
-import { Entity } from "../entity/entity";
-import { debounce } from "../decorators/debounce";
-import { Skill } from "./skill";
-import { AnimationFrames } from "../frames/frames";
-import { GameSounds } from "../game/sounds";
-import { Vector2D } from "../vector2d/vector2d";
+import { Entity, EDirections } from "../Entity";
+import { debounce } from "../Decorators/debounce";
+import { Skill } from "./Skill";
+import { AnimationFrames } from "../Frames";
+import { GameSounds } from "../GameManager/sounds";
+import { Vec2 } from "../Vec2";
 
 export const shoot_ray = debounce(
   (entity: Entity, skill_list: Array<Skill>): void => {
-    const position: Vector2D = entity.get_position();
-    const direction: string = entity.get_direction();
+    const position: Vec2 = entity.get_position();
 
     const skill: Skill = new Skill(
-      direction === "right" ? position.x + 125 : position.x - 5,
+      entity.direction === EDirections.RIGHT
+        ? position.x + 125
+        : position.x - 5,
       position.y + 65,
-      direction
+      entity.direction
     )
-      .set_velocity(direction === "right" ? 5 : -5, 0)
-      .set_velocity_incrementer(direction === "right" ? 0.2 : -0.2, 0)
+      .set_velocity(entity.direction === EDirections.RIGHT ? 5 : -5, 0)
+      .set_velocity_incrementer(
+        entity.direction === EDirections.RIGHT ? 0.2 : -0.2,
+        0
+      )
       .set_animation(AnimationFrames.skills.ray)
       .set_owned_by_player(true);
 

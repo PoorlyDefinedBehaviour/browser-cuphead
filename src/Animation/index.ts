@@ -1,4 +1,4 @@
-import { Game } from "../game/game";
+import { sketch } from "../P5/Index";
 
 export interface IFrameDimensions {
   width: number;
@@ -19,7 +19,7 @@ export class Animation {
     id: string = "none",
     skippable: boolean = true
   ) {
-    this.frames = frames.map(frame => Game.load_image(frame));
+    this.frames = frames.map(frame => sketch.loadImage(frame));
     this.frame_delay = frame_delay;
     this.id = id;
     this.skippable = skippable;

@@ -1,21 +1,29 @@
-import { Animation } from "../animation/animation";
-import { Vector2D } from "../vector2d/vector2d";
+import { Animation } from "../Animation";
+import { Vec2 } from "../Vec2";
 import { Maybe } from "../types/maybe";
+
+export enum EDirections {
+  LEFT,
+  RIGHT,
+  UP,
+  DOWN
+}
 
 export class Entity {
   private id: string;
-  private position: Vector2D = { x: 0, y: 0 };
-  private velocity: Vector2D = { x: 0, y: 0 };
+  private position: Vec2 = { x: 0, y: 0 };
+  private velocity: Vec2 = { x: 0, y: 0 };
 
   private animations: Map<string, Animation> = new Map<string, Animation>();
 
   private when_animation_over_fn: any = () => {};
 
-  private health: number = 100;
   private move_speed: number = 5;
 
-  private direction: string = "right";
   private current_animation: string = "idle";
+
+  public direction: number = EDirections.RIGHT;
+  public health: number = 100;
 
   constructor() {
     setInterval(() => {
@@ -49,13 +57,6 @@ export class Entity {
     return this;
   };
 
-  public set_direction = (direction: string): Entity => {
-    this.direction = direction;
-    return this;
-  };
-
-  public get_direction = (): string => this.direction;
-
   public set_move_speed = (speed: number): Entity => {
     this.move_speed = speed;
     return this;
@@ -68,14 +69,14 @@ export class Entity {
     return this;
   };
 
-  public get_position = (): Vector2D => this.position;
+  public get_position = (): Vec2 => this.position;
 
   public set_velocity = (x: number, y: number): Entity => {
     this.velocity = { x, y };
     return this;
   };
 
-  public get_velocity = (): Vector2D => this.velocity;
+  public get_velocity = (): Vec2 => this.velocity;
 
   set_animation = (name: string, force: boolean = false): Entity => {
     const animation: Maybe<Animation> = this.get_animation();

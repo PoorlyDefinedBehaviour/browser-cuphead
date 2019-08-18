@@ -1,4 +1,4 @@
-import { random_int } from "./randomint";
+import { random_int } from "./RandomInt";
 
 export const random_choice = (a: any, b: any): any => {
   if (Array.isArray(a)) {

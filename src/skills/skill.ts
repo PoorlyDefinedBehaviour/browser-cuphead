@@ -1,16 +1,18 @@
-import { Vector2D } from "../vector2d/vector2d";
-import { Animation } from "../animation/animation";
+import { Vec2 } from "../Vec2";
+import { Animation } from "../Animation";
+import { EDirections } from "../Entity";
 
 export class Skill {
-  private position: Vector2D = { x: 0, y: 0 };
-  private velocity_incrementer: Vector2D = { x: 0, y: 0 };
-  private velocity: Vector2D = { x: 0, y: 0 };
+  private position: Vec2 = { x: 0, y: 0 };
+  private velocity_incrementer: Vec2 = { x: 0, y: 0 };
+  private velocity: Vec2 = { x: 0, y: 0 };
   private damage: number = 1;
   private animation: Animation;
-  private direction: string;
   private owned_by_player: boolean = false;
 
-  constructor(x: number, y: number, direction: string) {
+  public direction: EDirections;
+
+  constructor(x: number, y: number, direction: EDirections) {
     this.position.x = x;
     this.position.y = y;
     this.direction = direction;
@@ -46,31 +48,24 @@ export class Skill {
     return this;
   };
 
-  public set_direction = (direction: string): Skill => {
-    this.direction = direction;
-    return this;
-  };
-
   public set_velocity = (x: number, y: number): Skill => {
     this.velocity = { x, y };
     return this;
   };
 
-  public get_velocity = (): Vector2D => this.velocity;
+  public get_velocity = (): Vec2 => this.velocity;
 
   public set_velocity_incrementer = (x: number, y: number): Skill => {
     this.velocity_incrementer = { x, y };
     return this;
   };
 
-  public get_velocity_incrementer = (): Vector2D => this.velocity_incrementer;
-
-  public get_direction = (): string => this.direction;
+  public get_velocity_incrementer = (): Vec2 => this.velocity_incrementer;
 
   public set_position = (x: number, y: number): Skill => {
     this.position = { x, y };
     return this;
   };
 
-  public get_position = (): Vector2D => this.position;
+  public get_position = (): Vec2 => this.position;
 }

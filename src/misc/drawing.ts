@@ -1,28 +1,34 @@
-import { Entity } from "../entity/entity";
-import { Animation } from "../animation/animation";
-import { Skill } from "../skills/skill";
-import { GameImages } from "../game/images";
-import { Animations } from "../game/animations";
+import { sketch } from "../P5/Index";
+
+import { Entity, EDirections } from "../Entity";
+
+import { Skill } from "../Skills/Skill";
+
+import { Animation } from "../Animation";
+
+import { GameImages } from "../GameManager/images";
+import { Animations } from "../GameManager/animations";
+
 import { Maybe } from "../types/maybe";
-import { Vector2D } from "../vector2d/vector2d";
-import { Game } from "../game/game";
+
+import { Vec2 } from "../Vec2";
 
 export const draw_entity = (entity: Entity): void => {
-  const position: Vector2D = entity.get_position();
+  const position: Vec2 = entity.get_position();
 
   const animation: Maybe<Animation> = entity.get_animation();
   if (!animation) return;
 
   const frame: any = animation.next_frame();
 
-  Game.push();
-  Game.translate(position.x, position.y);
+  sketch.push();
+  sketch.translate(position.x, position.y);
 
-  if (entity.get_direction() === "left") {
-    Game.translate(frame.width, 0);
-    Game.scale(-1.0, 1.0);
+  if (entity.direction === EDirections.LEFT) {
+    sketch.translate(frame.width, 0);
+    sketch.scale(-1.0, 1.0);
   } else {
-    Game.scale(1.0, 1.0);
+    sketch.scale(1.0, 1.0);
   }
 
   if (
@@ -31,11 +37,11 @@ export const draw_entity = (entity: Entity): void => {
     animation.get_current_frame_number() > 5 &&
     animation.get_current_frame_number() < 18
   ) {
-    Game.render_image(Animations.skills.missile.next_frame(), 90, -110);
+    sketch.image(Animations.skills.missile.next_frame(), 90, -110);
   }
 
-  Game.render_image(frame, 0, 0);
-  Game.pop();
+  sketch.image(frame, 0, 0);
+  sketch.pop();
 };
 
 export const draw_skills = (skill_list: Array<Skill>): void => {
@@ -45,21 +51,21 @@ export const draw_skills = (skill_list: Array<Skill>): void => {
     const position = skill.get_position();
     const frame = skill.get_animation().next_frame();
 
-    Game.push();
-    Game.translate(position.x, position.y);
+    sketch.push();
+    sketch.translate(position.x, position.y);
 
-    skill.get_direction() === "left"
-      ? Game.scale(-1.0, 1.0)
-      : Game.scale(1.0, 1.0);
+    skill.direction === EDirections.LEFT
+      ? sketch.scale(-1.0, 1.0)
+      : sketch.scale(1.0, 1.0);
 
-    Game.render_image(frame, 0, 0);
-    Game.pop();
+    sketch.image(frame, 0, 0);
+    sketch.pop();
   }
 };
 
 export const draw_health = (cuphead: Entity): void => {
   for (let i = 0; i < 3; ++i) {
-    Game.render_image(
+    sketch.image(
       i < cuphead.get_health()
         ? GameImages.cuphead_health_icon_filled
         : GameImages.cuphead_health_icon_dark,

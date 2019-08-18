@@ -1,3 +1,3 @@
-import { Game } from "./game/game";
+import { GameManager } from "./GameManager";
 
-new Game().start();
+new GameManager().start();

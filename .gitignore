@@ -3,5 +3,5 @@ node_modules/
 build/
 .cache/
 dist/
-tsconfig.buildinfo
+tsconfig.tsbuildinfo
 package-lock.json
