@@ -2,8 +2,6 @@
 
 Recreation of cuphead's floral fury boss fight
 
-[Click here to play](https://poorlydefinedbehaviour.github.io) (A chromium based browser is required.)
-
 ![Preview](https://github.com/PoorlyDefinedBehaviour/cuphead-floral-fury-boss-fight/blob/master/preview/preview.gif)
 
 # Installation
